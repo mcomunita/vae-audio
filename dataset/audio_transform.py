@@ -14,6 +14,10 @@ def get_instance(module, name, config):
     If there are args to specify the module, specify in config[name]['args']
     """
     func_args = config[name]['args'] if 'args' in config[name] else None
+    # print('-- Call Module --')
+    # print('module: ', module) 
+    # print('method: ', config[name]['type'])
+    # print('args: ', func_args, '\n')
 
     # if any argument specified in config[name]['args']
     if func_args:
@@ -31,7 +35,7 @@ def main(config):
     """
     Audio procesing: the transformations and directories are specified by config_audioTrans.json
     ---------------
-    This parse the every entry of 'transform#' in config_audioTrans.json,
+    This parse every entry of 'transform#' in config_audioTrans.json,
     intialize the pytorch dataset object with the specified transforms,
     and save to the specified directory in config_audioTrans.json.
     """
@@ -41,7 +45,8 @@ def main(config):
     config['dataset']['args']['transform'] = aggr_transform
 
     # get dataset and intialize with the parsed transformers
-    d = get_instance(module_dataset, 'dataset', config)
+    dataset = get_instance(module_dataset, 'dataset', config)
+    dataset.print_()
     config['dataset']['args'].pop('transform', None)  # remove once dataset is intialized, in order to save json later
 
     # write config file to the specified directory
@@ -53,10 +58,10 @@ def main(config):
 
     # read, process (by transform functions in object dataset), and save
     start_time = time.time()
-    for k in range(len(d)):
-        audio_path = str(d.path_to_data[k])
+    for k in range(len(dataset)):
+        audio_path = str(dataset.path_to_data[k])
         print("Transforming %d-th audio ... %s" % (k, audio_path))
-        idx, y, x = d[k]
+        idx, y, x = dataset[k] # index, label, path_to_data
 
         if config['dataset']['type'] == 'CollectData':
             split = audio_path.split('/')[-3]

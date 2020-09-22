@@ -8,21 +8,33 @@ class AudioRead:
         self.sr = sr
         self.offset = offset
         self.duration = duration
+        self.print_()
 
     def __call__(self, x):
         y, sr = librosa.load(x, sr=self.sr, duration=self.duration, offset=self.offset)
         return y
+    
+    def print_(self):
+        print('-- transformer.AudioRead --')
+        print('args: ', {'sr':self.sr, 
+                        'offset':self.offset, 
+                        'duration': self.duration}, '\n')
 
 
 class Zscore:
     def __init__(self, divide_sigma=False):
         self.divide_sigma = divide_sigma
+        self.print_()
 
     def __call__(self, x):
         x -= x.mean()
         if self.divide_sigma:
             x /= x.std()
         return x
+    
+    def print_(self):
+        print('-- transformer.Zscore --')
+        print('args: ', {'divide_sigma':self.divide_sigma}, '\n')
 
 
 class PadAudio:
@@ -34,6 +46,7 @@ class PadAudio:
         """
         self.pad_to = pad_to
         self.sr = sr
+        self.print_()
 
     def __call__(self, x):
         target_len = int(self.pad_to * self.sr)
@@ -44,6 +57,10 @@ class PadAudio:
             x = x[:target_len]
 
         return x
+    
+    def print_(self):
+        print('-- transformer.PadAudio --')
+        print('args: ', {'sr': self.sr, 'pad': self.pad_to}, '\n')
 
 
 class Spectrogram:
@@ -62,6 +79,7 @@ class Spectrogram:
         self.hop_size = hop_size
         self.n_band = n_band
         self.spec_type = spec_type
+        self.print_()
 
     def __call__(self, x):
         assert self.spec_type in ['lin', 'mel', 'cqt'], "spec_type should be in ['lin', 'mel', 'cqt']"
@@ -81,12 +99,21 @@ class Spectrogram:
             raise NotImplementedError
 
         return S
+    
+    def print_(self):
+        print('-- transformer.Spectrogram --')
+        print('args: ', {'sr': self.sr,
+                        'n_fft':self.n_fft, 
+                        'hop_size': self.hop_size,
+                        'n_band': self.n_band,
+                        'spec_type': self.spec_type}, '\n')
 
 
 class MinMaxNorm:
     def __init__(self, min_val=0, max_val=1):
         self.min_val = min_val
         self.max_val = max_val
+        self.print_()
 
     def __call__(self, x):
         x -= x.mean()
@@ -99,6 +126,10 @@ class MinMaxNorm:
             return (self.max_val - self.min_val) * (nom / den) + self.min_val
         else:
             return nom
+    
+    def print_(self):
+        print('-- transformer.MinMaxNorm --')
+        print('args: ', {'min_val': self.min_val, 'max_val': self.max_val}, '\n')
 
 
 class SpecChunking:
@@ -140,6 +171,14 @@ class SpecChunking:
         x_chunk = [x_i for x_i in x_chunk if x_i.shape[time_dim] == self.chunk_size]
 
         return np.array(x_chunk)
+    
+    def print_(self):
+        print('-- transformer.SpecChunking --')
+        print('args: ', {'duration': self.duration,
+                        'sr': self.sr, 
+                        'hop_size': self.hop_size,
+                        'reverse': self.reverse,
+                        'spec_type': self.spec_type}, '\n')
 
 
 class LoadNumpyAry:

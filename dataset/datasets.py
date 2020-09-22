@@ -49,6 +49,7 @@ class CollectData(Dataset):
         self.transform = transform
         self.path_to_data = aggr_data_path
         self.labels = aggr_label
+        self.print_()
 
     def __len__(self):
         return len(self.path_to_data)
@@ -56,26 +57,25 @@ class CollectData(Dataset):
     def __getitem__(self, idx):
         if self.transform:
             return idx, self.labels[idx], self.transform(self.path_to_data[idx])
-
         return idx, self.labels[idx], self.path_to_data[idx]
     
     def print_(self):
-        print('dataset(CollectData):')
+        print('-- datasets.CollectData --')
         print('path_to_dataset: ', self.path_to_dataset)
-        print('path_to_data: ', self.path_to_data[:3])
+        print('path_to_data: ', self.path_to_data[:2])
         print('extensions: ', self.extension)
         print('subset: ', self.subset)
         print('transform: ', self.transform)
         print('labels: ', self.labels[:3])
         print('# of classes: ', len(set(self.labels)))
-        print('length: ', len(self))
+        print('length: ', len(self), '\n')
 
 
 if __name__ == '__main__':
     path_to_data = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'myAudioDataset/audio')
     # path_to_data = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'myAudioDataset/m64-5s')
     
-    dataset = CollectData([path_to_data], subset=None, transform=None)
+    dataset = CollectData(path_to_dataset=[path_to_data], extension=['wav', 'npy'], subset=None, transform=None)
     # print("the number of data: %d" % len(dataset))
     # try:
     #     print("the first five entries:")
@@ -83,4 +83,3 @@ if __name__ == '__main__':
     #         print(dataset[n])
     # except:
     #     raise IndexError("There is none or fewer than 5 data in the input path")
-    dataset.print_()
