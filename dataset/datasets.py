@@ -36,11 +36,12 @@ class CollectData(Dataset):
         aggr_data_path = []
         aggr_label = []
         for data_dir in full_path_to_dataset:
-            for subclass in os.listdir(data_dir):
-                for f in os.listdir(os.path.join(data_dir, subclass)):
-                    if any(ext in f for ext in extension):
-                        aggr_data_path.append(os.path.join(data_dir, subclass, f))
-                        aggr_label.append(subclass)
+            for subclass in sorted(os.listdir(data_dir)):
+                if not(subclass.startswith(".")): # ignore hidden files/dirs
+                    for f in sorted(os.listdir(os.path.join(data_dir, subclass))):
+                        if not(f.startswith(".")) and any(ext in f for ext in extension): # ignore hidden files/dirs
+                            aggr_data_path.append(os.path.join(data_dir, subclass, f))
+                            aggr_label.append(subclass)
 
         self.path_to_dataset = path_to_dataset
         self.extension = extension
