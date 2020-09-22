@@ -58,15 +58,27 @@ class CollectData(Dataset):
             return idx, self.labels[idx], self.transform(self.path_to_data[idx])
 
         return idx, self.labels[idx], self.path_to_data[idx]
+    
+    def print_(self):
+        print('dataset(CollectData):')
+        print('path_to_dataset: ', self.path_to_dataset)
+        print('path_to_data: ', self.path_to_data[:3])
+        print('extensions: ', self.extension)
+        print('subset: ', self.subset)
+        print('transform: ', self.transform)
+        print('labels: ', self.labels[:3])
+        print('# of classes: ', len(set(self.labels)))
+        print('length: ', len(self))
 
 
 if __name__ == '__main__':
     path_to_data = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'myAudioDataset/audio')
-    d = CollectData([path_to_data], subset=None, transform=None)
-    print("the number of data: %d" % len(d))
-    try:
-        print("the first five entries:")
-        for n in range(5):
-            print(d[n])
-    except:
-        raise IndexError("There is none or fewer than 5 data in the input path")
+    dataset = CollectData([path_to_data], subset=None, transform=None)
+    # print("the number of data: %d" % len(dataset))
+    # try:
+    #     print("the first five entries:")
+    #     for n in range(5):
+    #         print(dataset[n])
+    # except:
+    #     raise IndexError("There is none or fewer than 5 data in the input path")
+    dataset.print_()
