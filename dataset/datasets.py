@@ -73,6 +73,8 @@ class CollectData(Dataset):
 
 if __name__ == '__main__':
     path_to_data = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'myAudioDataset/audio')
+    # path_to_data = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'myAudioDataset/m64-5s')
+    
     dataset = CollectData([path_to_data], subset=None, transform=None)
     # print("the number of data: %d" % len(dataset))
     # try:

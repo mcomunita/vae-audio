@@ -66,8 +66,9 @@ class Spectrogram:
     def __call__(self, x):
         assert self.spec_type in ['lin', 'mel', 'cqt'], "spec_type should be in ['lin', 'mel', 'cqt']"
         if self.spec_type == 'lin':
-            S = librosa.core.stft(y=x, n_fft=self.n_fft, hop_length=self.hop_size)
-            S = np.abs(S) ** 2  # power spectrogram
+            D = librosa.core.stft(y=x, n_fft=self.n_fft, hop_length=self.hop_size)
+            # S = np.abs(S) ** 2  # power spectrogram
+            S = np.abs(D) # amplitude spectrogram
 
         elif self.spec_type == 'mel':
             S = librosa.feature.melspectrogram(y=x, sr=self.sr, n_fft=self.n_fft,
