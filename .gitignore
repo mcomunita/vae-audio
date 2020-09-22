@@ -13,5 +13,5 @@ venv/
 
 # data, saved models
 saved
-../dataset/myAudioDataset/**
-textureDataset
+dataset/myAudioDataset
+dataset/textureDataset
