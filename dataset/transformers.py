@@ -143,6 +143,7 @@ class SpecChunking:
                          set True if the end is more important than the begin of spectrogram
         TODO:
             [] Allow an input argument to indicate the overlapping amount between chunks
+            [] Check that duration is less than spectrogram
         """
         self.duration = duration
         self.sr = sr
@@ -152,7 +153,7 @@ class SpecChunking:
 
     def __call__(self, x):
         time_dim = 1  # assume input spectrogram with shape n_freqBand * n_contextWin
-        n_contextWin = x.shape[time_dim]  # context window size of the input spectrogram
+        n_contextWin = x.shape[time_dim]  # context window size (in # of frames) of the input spectrogram
         # TODO: overlapping window size; with the amount of overlap as an input argument
         indices = np.arange(self.chunk_size, n_contextWin, self.chunk_size)  # currently non-overlapping chunking
 
@@ -167,7 +168,7 @@ class SpecChunking:
         if self.reverse:
             x_chunk = [np.flip(i, time_dim) for i in x_chunk[::-1]]
 
-        # discard those short chunks
+        # discard those short chunks - in theory need only to check last chunk
         x_chunk = [x_i for x_i in x_chunk if x_i.shape[time_dim] == self.chunk_size]
 
         return np.array(x_chunk)

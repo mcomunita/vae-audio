@@ -62,6 +62,7 @@ def main(config):
         audio_path = str(dataset.path_to_data[k])
         print("Transforming %d-th audio ... %s" % (k, audio_path))
         idx, y, x = dataset[k] # index, label, path_to_data
+        print('output shape: ', x.shape)
 
         if config['dataset']['type'] == 'CollectData':
             split = audio_path.split('/')[-3]

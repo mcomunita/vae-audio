@@ -5,7 +5,7 @@
     "arch": {
         "type": "SpecVAE",
         "args": {
-            "input_size": [1, 64, 15],
+            "input_size": [10, 64, 10],
             "latent_dim": 32,
             "is_featExtract": false,
             "n_convLayer": 3,
