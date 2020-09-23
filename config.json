@@ -48,14 +48,14 @@
     },
     "trainer": {
         "type": "Conv1dSpecVaeTrainer",
-        "epochs": 1000,
+        "epochs": 10000,
 
         "save_dir": "saved/",
         "save_period": 10,
         "verbosity": 2,
         
         "monitor": "min val_loss",
-        "early_stop": 20,
+        "early_stop": 1000,
         
         "tensorboardX": true
     }
