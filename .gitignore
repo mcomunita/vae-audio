@@ -12,6 +12,3 @@ venv/
 .DS_Store
 
 # data, saved models
-saved
-dataset/myAudioDataset
-dataset/textureDataset
