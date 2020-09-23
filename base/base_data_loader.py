@@ -25,6 +25,7 @@ class BaseDataLoader(DataLoader):
             'num_workers': num_workers
         }
         super(BaseDataLoader, self).__init__(sampler=self.sampler, **self.init_kwargs)
+        self.print_()
 
     def _split_sampler(self, split):
         if split == 0.0:
@@ -59,3 +60,14 @@ class BaseDataLoader(DataLoader):
             return None
         else:
             return DataLoader(sampler=self.valid_sampler, **self.init_kwargs)
+    
+    def print_(self):
+        print('-- base data loader --')
+        print('validation_split: ', self.validation_split)
+        print('shuffle: ', self.shuffle)
+        print('batch_idx: ', self.batch_idx)
+        print('n_samples: ', self.n_samples)
+        print('sampler: ', len(self.sampler))
+        print('valid_sampler: ', len(self.valid_sampler))
+        print('init_kwargs: ', self.init_kwargs)
+        print()

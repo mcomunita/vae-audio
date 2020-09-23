@@ -54,7 +54,7 @@ def main(config):
     if not os.path.exists(processed_audio_savePath):
         os.makedirs(processed_audio_savePath)
     print("Saving the processed audios in %s" % processed_audio_savePath)
-    save_json(config, os.path.join(processed_audio_savePath, 'config.json'))
+    save_json(config, os.path.join(processed_audio_savePath, 'config.json'), n_indent=4)
 
     # read, process (by transform functions in object dataset), and save
     start_time = time.time()
@@ -77,6 +77,7 @@ def main(config):
                     cname = fname + '_' + str(i)
                     np.save(os.path.join(file_savePath, cname), x[i])
                     print("Saving %s" % cname)
+                    print('chunk shape: ', x[i].shape)
             else:
                 np.save(os.path.join(file_savePath, fname), x)
                 print("Saving %s" % fname)

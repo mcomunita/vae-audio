@@ -4,7 +4,7 @@ from torchvision.utils import make_grid
 from base import BaseTrainer
 
 
-class SpecVaeTrainer(BaseTrainer):
+class Conv1dSpecVaeTrainer(BaseTrainer):
     """
     Trainer class
 
@@ -13,7 +13,7 @@ class SpecVaeTrainer(BaseTrainer):
     """
     def __init__(self, model, loss, metrics, optimizer, config,
                  data_loader, valid_data_loader=None, lr_scheduler=None):
-        super(SpecVaeTrainer, self).__init__(model, loss, metrics, optimizer, config)
+        super(Conv1dSpecVaeTrainer, self).__init__(model, loss, metrics, optimizer, config)
         self.config = config
         self.data_loader = data_loader
         self.valid_data_loader = valid_data_loader
@@ -29,11 +29,16 @@ class SpecVaeTrainer(BaseTrainer):
         return acc_metrics
 
     def _reshape(self, x):
-        n_freqBand, n_contextWin = x.size(2), x.size(3)
-        return x.view(-1, 1, n_freqBand, n_contextWin)
+        # assume dimensions to be [batch_size, n_freqBins, n_timeFrames]
+        # probably unnecessary with separation between Conv1d and Conv2d models
+        # n_freq, n_contextWin = x.size(2), x.size(3)
+        n_freqBins, n_timeFrames = x.size(-2), x.size(-1)
+        return x.view(-1, n_freqBins, n_timeFrames)
 
     def _forward_and_computeLoss(self, x, target):
         x_recon, mu, logvar, z = self.model(x)
+        # print('x_recon: ', x_recon.shape)
+        # print('target: ', target.shape)
         loss_recon, loss_kl = self.loss(mu, logvar, x_recon, target)
         loss = loss_recon + loss_kl
         return loss, loss_recon, loss_kl
@@ -62,12 +67,12 @@ class SpecVaeTrainer(BaseTrainer):
         # total_metrics = np.zeros(len(self.metrics))
         for batch_idx, (data_idx, label, data) in enumerate(self.data_loader):
             x = data.type('torch.FloatTensor').to(self.device)
-            print('x.shape before:', x.shape)
+            # print('x.shape before:', x.shape)
             x = self._reshape(x)
-            print('x.shape after:', x.shape)
+            # print('x.shape after:', x.shape)
 
             self.optimizer.zero_grad()
-            loss, loss_recon, loss_kl = self._forward_and_computeLoss(x, x)
+            loss, loss_recon, loss_kl = self._forward_and_computeLoss(x=x, target=x)
             loss.backward()
             self.optimizer.step()
 

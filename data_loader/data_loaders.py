@@ -12,17 +12,27 @@ class CollectDataLoader(BaseDataLoader):
         1. Load spectrograms that were preprocessed and stored in data_dir
         2. Perform SpecChunking to slice spectrograms into fixed-length, non-overlapping chunks
     TODO:
+        [] Remove SpecChunking
         [] Prolly make self.transform as arguments in config file
     """
     def __init__(self, data_dir, batch_size, shuffle=True, validation_split=0.1, num_workers=1, **kwargs):
         self.transform = transforms.Compose([
             transformers.LoadNumpyAry(),
-            transformers.SpecChunking(duration=0.5, sr=22050, hop_size=735, reverse=False)
+            # transformers.SpecChunking(duration=0.5, sr=22050, hop_size=735, reverse=False)
         ])
 
         self.data_dir = data_dir
         self.dataset = CollectData(self.data_dir, transform=self.transform, **kwargs)
         super(CollectDataLoader, self).__init__(self.dataset, batch_size, shuffle, validation_split, num_workers)
+        self.print_()
+    
+    def print_(self):
+        super(self.__class__, self).print_()
+        print('-- collect data loader --')
+        print('transform: ', self.transform)
+        print('data_dir: ', self.data_dir)
+        print('dataset: ', self.dataset)
+        print()
 
 
 if __name__ == '__main__':

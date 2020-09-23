@@ -19,7 +19,9 @@ def main(config):
 
     # build model architecture, then print to console
     model = config.initialize('arch', module_arch)
+    print('-- model --')
     logger.info(model)
+    print()
 
     # get function handles of loss and metrics
     loss = getattr(module_loss, config['loss'])

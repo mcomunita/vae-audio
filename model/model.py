@@ -103,7 +103,7 @@ def fc(n_layer, n_channel, activation='tanh', batchNorm=True):
     return nn.Sequential(*fc_layers)
 
 
-class SpecVAE(BaseVAE):
+class Conv1dSpecVAE(BaseVAE):
     def __init__(self, input_size=(64, 15), latent_dim=32, is_featExtract=False,
                  n_convLayer=3, n_convChannel=[32, 16, 8], filter_size=[1, 3, 3], stride=[1, 2, 2],
                  n_fcLayer=1, n_fcChannel=[256]):
@@ -114,16 +114,23 @@ class SpecVAE(BaseVAE):
         :param latent_dim: the dimension of the latent vector
         :param is_featExtract: if True, output z as mu; otherwise, output z derived from reparameterization trick
         """
-        super(SpecVAE, self).__init__(input_size, latent_dim, is_featExtract)
+        super(Conv1dSpecVAE, self).__init__(input_size, latent_dim, is_featExtract)
         self.input_size = input_size
         self.latent_dim = latent_dim
         self.is_featExtract = is_featExtract
 
-        self.n_chunks, self.n_freqBand, self.n_contextWin = input_size
+        self.n_inputFreqBins, self.n_inputTimeFrames = input_size
         print('input_size: ', input_size)
 
         # Construct encoder and Gaussian layers
-        self.encoder = spec_conv1d(n_convLayer, [self.n_freqBand] + n_convChannel, filter_size, stride)
+        self.encoder = spec_conv1d(
+                                    n_layer=n_convLayer, 
+                                    n_channel=[self.n_inputFreqBins] + n_convChannel, 
+                                    filter_size=filter_size, 
+                                    stride=stride
+                                    )
+        # print('-- encoder --')
+        # print(self.encoder)
         self.flat_size, self.encoder_outputSize = self._infer_flat_size()
         self.encoder_fc = fc(n_fcLayer, [self.flat_size, *n_fcChannel], activation='tanh', batchNorm=True)
         self.mu_fc = fc(1, [n_fcChannel[-1], latent_dim], activation=None, batchNorm=False)
@@ -132,16 +139,24 @@ class SpecVAE(BaseVAE):
         # Construct decoder
         self.decoder_fc = fc(n_fcLayer + 1, [self.latent_dim, *n_fcChannel[::-1], self.flat_size],
                              activation='tanh', batchNorm=True)
-        self.decoder = spec_deconv1d(n_convLayer, [self.n_freqBand] + n_convChannel, filter_size, stride)
+        self.decoder = spec_deconv1d(
+                                    n_layer=n_convLayer, 
+                                    n_channel=[self.n_inputFreqBins] + n_convChannel, 
+                                    filter_size=filter_size, 
+                                    stride=stride
+                                    )
 
     def _infer_flat_size(self):
-        encoder_output = self.encoder(torch.ones(1, *self.input_size))
+        dummy_input = torch.ones(1, *self.input_size)
+        print('dummy_input: ', dummy_input.shape)
+        encoder_output = self.encoder(dummy_input)
+        print('encoder_output: ', encoder_output.shape)
         return int(np.prod(encoder_output.size()[1:])), encoder_output.size()[1:]
 
     def encode(self, x):
-        if len(x.shape) == 4:
-            assert x.shape[1] == 1
-            x = x.squeeze(1)
+        # if len(x.shape) == 4:
+        #     assert x.shape[1] == 1
+        #     x = x.squeeze(1)
 
         h = self.encoder(x)
         h2 = self.encoder_fc(h.view(-1, self.flat_size))
@@ -161,6 +176,13 @@ class SpecVAE(BaseVAE):
         x_recon = self.decode(z)
         # print(x_recon.size(), mu.size(), var.size(), z.size())
         return x_recon, mu, logvar, z
+
+
+# class Conv2dSpecVAE(BaseVAE):
+    """
+    TODO: extend to 2d convolutions (i.e. 4d input shape)
+    """
+    # def __init__(self)
 
 
 class Conv1dGMVAE(BaseGMVAE):
