@@ -1,7 +1,7 @@
 from torch.utils.data import Dataset
 from torchvision import datasets, transforms
 from base import BaseDataLoader
-from dataset import transformers, CollectData, NsynthSubset
+from dataset import transformers, CollectData
 
 
 class CollectDataLoader(BaseDataLoader):

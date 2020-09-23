@@ -19,7 +19,8 @@ def spec_conv1d(n_layer=3, n_channel=[64, 32, 16, 8], filter_size=[1, 3, 3], str
         [x] directly use nn.Conv1d for implementation
         [] allow different activations and batch normalization functions
     """
-
+    print('n_channel: ', n_channel)
+    print('n_layer: ', n_layer)
     assert len(n_channel) == n_layer + 1, "This must fulfill: len(n_channel) = n_layer + 1"
     ast_msg = "The following must fulfill: len(filter_size) == len(stride) == n_layer"
     assert len(filter_size) == len(stride) == n_layer, ast_msg
@@ -118,7 +119,8 @@ class SpecVAE(BaseVAE):
         self.latent_dim = latent_dim
         self.is_featExtract = is_featExtract
 
-        self.n_freqBand, self.n_contextWin = input_size
+        self.n_chunks, self.n_freqBand, self.n_contextWin = input_size
+        print('input_size: ', input_size)
 
         # Construct encoder and Gaussian layers
         self.encoder = spec_conv1d(n_convLayer, [self.n_freqBand] + n_convChannel, filter_size, stride)

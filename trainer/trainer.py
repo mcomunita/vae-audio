@@ -62,7 +62,9 @@ class SpecVaeTrainer(BaseTrainer):
         # total_metrics = np.zeros(len(self.metrics))
         for batch_idx, (data_idx, label, data) in enumerate(self.data_loader):
             x = data.type('torch.FloatTensor').to(self.device)
+            print('x.shape before:', x.shape)
             x = self._reshape(x)
+            print('x.shape after:', x.shape)
 
             self.optimizer.zero_grad()
             loss, loss_recon, loss_kl = self._forward_and_computeLoss(x, x)
