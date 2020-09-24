@@ -53,7 +53,7 @@ def spec_deconv1d(n_layer=3, n_channel=[64, 32, 16, 8], filter_size=[1, 3, 3], s
         [] allow different activations and batch normalization functions
     """
 
-    assert len(n_channel) == n_layer + 1, "This must fulfill: len(n_channel) = n_layer + 1"
+    assert len(n_channel) == n_layer + 1, "This must fulfill: len(n_convChannel) = n_convLayer + 1"
     ast_msg = "The following must fulfill: len(filter_size) == len(stride) == n_layer"
     assert len(filter_size) == len(stride) == n_layer, ast_msg
 
@@ -88,7 +88,7 @@ def fc(n_layer, n_channel, activation='tanh', batchNorm=True):
         [] allow different activations and batch normalization functions
     """
 
-    assert len(n_channel) == n_layer + 1, "This must fulfill: len(n_channel) = n_layer + 1"
+    assert len(n_channel) == n_layer + 1, "This must fulfill: len(n_fcChannel) = n_fcLayer + 1"
     assert activation in [None, 'tanh'], "Only implement 'tanh' for now"
 
     fc_layers = []
