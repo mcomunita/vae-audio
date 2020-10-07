@@ -69,13 +69,14 @@ def main(config, resume):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='PyTorch Template')
-
-    parser.add_argument('-r', '--resume', default=None, type=str,
+    args = argparse.ArgumentParser(description='PyTorch Template')
+    args.add_argument('-r', '--resume', default=None, type=str,
                         help='path to latest checkpoint (default: None)')
-    parser.add_argument('-d', '--device', default=None, type=str,
+    args.add_argument('-d', '--device', default=None, type=str,
                         help='indices of GPUs to enable (default: all)')
 
-    args = parser.parse_args()
+    # args = parser.parse_args()
+    # print(args)
     config = ConfigParser(args)
-    main(config, args.resume)
+    print(config)
+    # main(config, args.resume)

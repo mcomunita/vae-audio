@@ -62,7 +62,13 @@ class CollectData(Dataset):
     def print_(self):
         print('-- datasets.CollectData --')
         print('path_to_dataset: ', self.path_to_dataset)
-        print('path_to_data: ', self.path_to_data[:2])
+        # for i in range(5):
+        #     if i == 0:
+        #         print('path_to_data: [\n\t', self.path_to_data[i])
+        #     elif i == 4:
+        #         print('\t', self.path_to_data[i], '\n]')
+        #     else:
+        #         print('\t', self.path_to_data[i])
         print('extensions: ', self.extension)
         print('subset: ', self.subset)
         print('transform: ', self.transform)

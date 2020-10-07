@@ -4,6 +4,7 @@ from torchvision.utils import make_grid
 from base import BaseTrainer
 
 
+# =======================================================================
 class Conv1dSpecVaeTrainer(BaseTrainer):
     """
     Trainer class
@@ -150,6 +151,7 @@ class Conv1dSpecVaeTrainer(BaseTrainer):
         }
 
 
+# =======================================================================
 class GMVAETrainer(BaseTrainer):
     """
     Trainer class

@@ -5,7 +5,7 @@ from functools import reduce
 from operator import getitem
 from datetime import datetime
 from logger import setup_logging
-from utils import read_json, write_json
+from utils import read_json, write_json, print_json
 
 
 class ConfigParser:
@@ -51,6 +51,9 @@ class ConfigParser:
             1: logging.INFO,
             2: logging.DEBUG
         }
+    
+    def print_(self):
+        print_json(self.__config)
 
     def initialize(self, name, module, *args):
         """

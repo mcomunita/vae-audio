@@ -33,8 +33,9 @@ class BaseDataLoader(DataLoader):
 
         idx_full = np.arange(self.n_samples)
 
-        np.random.seed(0)
-        np.random.shuffle(idx_full)
+        if self.shuffle:
+            np.random.seed(0)
+            np.random.shuffle(idx_full)
 
         if isinstance(split, int):
             assert split > 0
@@ -43,15 +44,16 @@ class BaseDataLoader(DataLoader):
         else:
             len_valid = int(self.n_samples * split)
 
-        valid_idx = idx_full[0:len_valid]
-        train_idx = np.delete(idx_full, np.arange(0, len_valid))
+        valid_idx = idx_full[:len_valid]
+        train_idx = idx_full[len_valid:]
+        # train_idx = np.delete(idx_full, np.arange(0, len_valid)) # why not simply [len_valid:]? 
 
         train_sampler = SubsetRandomSampler(train_idx)
         valid_sampler = SubsetRandomSampler(valid_idx)
 
         # turn off shuffle option which is mutually exclusive with sampler
         self.shuffle = False
-        self.n_samples = len(train_idx)
+        # self.n_samples = len(train_idx)
 
         return train_sampler, valid_sampler
 
@@ -67,7 +69,7 @@ class BaseDataLoader(DataLoader):
         print('shuffle: ', self.shuffle)
         print('batch_idx: ', self.batch_idx)
         print('n_samples: ', self.n_samples)
-        print('sampler: ', len(self.sampler))
-        print('valid_sampler: ', len(self.valid_sampler))
+        print('n_train_samples: ', len(self.sampler))
+        print('n_valid_samples: ', len(self.valid_sampler))
         print('init_kwargs: ', self.init_kwargs)
         print()

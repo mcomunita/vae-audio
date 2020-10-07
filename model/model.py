@@ -19,8 +19,8 @@ def spec_conv1d(n_layer=3, n_channel=[64, 32, 16, 8], filter_size=[1, 3, 3], str
         [x] directly use nn.Conv1d for implementation
         [] allow different activations and batch normalization functions
     """
-    print('n_channel: ', n_channel)
-    print('n_layer: ', n_layer)
+    # print('n_channel: ', n_channel)
+    # print('n_layer: ', n_layer)
     assert len(n_channel) == n_layer + 1, "This must fulfill: len(n_channel) = n_layer + 1"
     ast_msg = "The following must fulfill: len(filter_size) == len(stride) == n_layer"
     assert len(filter_size) == len(stride) == n_layer, ast_msg
@@ -120,7 +120,7 @@ class Conv1dSpecVAE(BaseVAE):
         self.is_featExtract = is_featExtract
 
         self.n_inputFreqBins, self.n_inputTimeFrames = input_size
-        print('input_size: ', input_size)
+        # print('input_size: ', input_size)
 
         # Construct encoder and Gaussian layers
         self.encoder = spec_conv1d(
@@ -148,9 +148,9 @@ class Conv1dSpecVAE(BaseVAE):
 
     def _infer_flat_size(self):
         dummy_input = torch.ones(1, *self.input_size)
-        print('dummy_input: ', dummy_input.shape)
+        # print('dummy_input: ', dummy_input.shape)
         encoder_output = self.encoder(dummy_input)
-        print('encoder_output: ', encoder_output.shape)
+        # print('encoder_output: ', encoder_output.shape)
         return int(np.prod(encoder_output.size()[1:])), encoder_output.size()[1:]
 
     def encode(self, x):
